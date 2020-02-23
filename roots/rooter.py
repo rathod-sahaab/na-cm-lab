@@ -11,16 +11,18 @@ def newton_raphson(function, initial_guess, n_digit_precision=6):
     """
 
     x = initial_guess
-    fx = function(x)
-    precision = 10**(-n_digit_precision)
+    precision = 0.5 * 10**(-n_digit_precision)
 
     stage = 1
-    while math.fabs(fx) > precision:
-        x = (x - (fx / function(x, differentiate=True)))
-        fx = function(x)
+    while True:
+        xprev = x
+        x = (x - (function(x) / function(x, differentiate=True)))
 
-        print("x{} = {}".format(stage, x))
+        print("x{} = {}".format(stage, round(x, n_digit_precision)))
         stage += 1
+
+        if math.fabs(x-xprev) < precision:
+            return x
 
 
 def bisection(function, x1, x2, n_digit_precision=6):
@@ -50,7 +52,7 @@ def base_rooter(intermidiate_calculation_function, function, x1, x2,
     """
     Find root of a function dependent on one variable. (General)
     """
-    precision = 10**(-n_digit_precision)
+    precision = 0.5 * 10**(-n_digit_precision)
 
     if not bool(function(x1) < 0) ^ bool(function(x2) < 0):
         # same as function(x1)*function(x2) >0
@@ -58,8 +60,11 @@ def base_rooter(intermidiate_calculation_function, function, x1, x2,
         return False
 
     fx1 = function(x1)
+    stage = 0
     while True:
         x = intermidiate_calculation_function(x1, x2)
+        print("x{} = {}".format(stage, x))
+        stage += 1
 
         fx = function(x)
         # print(fx)
